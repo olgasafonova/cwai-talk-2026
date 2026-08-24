@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Knowing what good looks like</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;
+  --text:#000000;
+  --accent:#d92b20;
+  --accent-0:rgba(217,43,32,0);
+  --gray:#595959;
+  --grid-color:rgba(0,0,0,0.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+body{
+  font-family:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-feature-settings:"kern" 1;
+  -webkit-font-smoothing:antialiased;
+}
+.slide{
+  position:relative;
+  width:100vw;
+  height:100vh;
+  min-height:100vh;
+  overflow:hidden;
+  scroll-snap-align:start;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-items:flex-start;
+  text-align:left;
+  padding:20vmin 10vmin 10vmin 10vmin;
+}
+.slide::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(var(--grid-color) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid-color) 1px,transparent 1px);
+  background-size:10% 10%;
+  pointer-events:none;
+  opacity:.5;
+}
+.slide > *{position:relative;z-index:1}
+
+.category{
+  font-size:2vmin;
+  font-weight:700;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--accent);
+  position:absolute;
+  top:7vmin;
+  left:10vmin;
+}
+.num{
+  position:absolute;
+  bottom:8vmin;
+  right:8vmin;
+  font-size:1.7vmin;
+  font-weight:500;
+  color:var(--gray);
+  letter-spacing:.15em;
+}
+
+/* Lifecycle stepper, shown on stage slides */
+.stages{
+  position:absolute;
+  top:7vmin;
+  right:8vmin;
+  display:flex;
+  gap:2.2vmin;
+  font-size:1.7vmin;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#767676;
+}
+.stages span{padding-bottom:.7vmin;border-bottom:.4vmin solid transparent}
+.stages span.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+h1{
+  font-size:8vmin;
+  font-weight:900;
+  text-transform:uppercase;
+  line-height:.98;
+  letter-spacing:-.02em;
+  max-width:80%;
+  text-wrap:balance;
+}
+h2{
+  font-size:6.4vmin;
+  font-weight:800;
+  text-transform:uppercase;
+  line-height:1.02;
+  letter-spacing:-.015em;
+  max-width:70%;
+  text-wrap:balance;
+}
+.lead{
+  font-size:3.4vmin;
+  font-weight:300;
+  line-height:1.42;
+  max-width:60%;
+  margin-top:3.2vmin;
+}
+.lead strong{font-weight:700}
+.small{
+  font-size:2.5vmin;
+  font-weight:400;
+  color:var(--gray);
+  margin-top:2.6vmin;
+  max-width:58%;
+  line-height:1.5;
+}
+.rule{
+  width:14vmin;
+  height:.7vmin;
+  background:var(--accent);
+  margin:3.4vmin 0 0 0;
+}
+.quote{
+  font-size:4.2vmin;
+  font-weight:400;
+  line-height:1.35;
+  border-left:.7vmin solid var(--accent);
+  padding-left:3vmin;
+  max-width:70%;
+  margin-top:0;
+}
+
+/* Title slide */
+.slide-title{justify-content:center;padding:8vmin 10vmin 10vmin 10vmin}
+.slide-title h1{font-size:10.4vmin;max-width:88%}
+.title-sub{
+  font-size:3.4vmin;
+  font-weight:300;
+  margin-top:3.6vmin;
+  max-width:70%;
+  line-height:1.35;
+}
+.title-meta{
+  position:absolute;
+  bottom:8vmin;
+  left:10vmin;
+  font-size:2.1vmin;
+  font-weight:500;
+  letter-spacing:.06em;
+  color:var(--gray);
+  line-height:1.7;
+}
+.title-meta b{color:var(--text);font-weight:700}
+
+/* Comparison blocks */
+.compare{display:flex;gap:5vmin;margin-top:3.4vmin;width:78%}
+.card{flex:1;border-top:.55vmin solid var(--text);padding-top:2vmin}
+.card.on{border-top-color:var(--accent)}
+.card-h{
+  font-size:1.7vmin;font-weight:700;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--gray);margin-bottom:1.6vmin;
+}
+.card.on .card-h{color:var(--accent)}
+.card-b{
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  font-size:2.6vmin;line-height:1.55;
+}
+
+/* Real output panels: SkillCheck run, dep-triage deltas. Dark ground marks
+   "this is genuine machine output", same family as the closing slide. */
+.term{
+  position:absolute;right:8vmin;top:20vmin;
+  width:52vmin;background:#1A1A1A;padding:2.8vmin 3vmin;
+  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  font-size:1.7vmin;line-height:1.85;color:#FAFAFA;
+}
+.term .cmd{color:#9e9e9e}
+.term .crit{color:#ef6a5f;font-weight:700}
+.term .hit{color:#ef6a5f}
+.term .mut{color:#9e9e9e}
+
+/* Big number */
+.bignum{
+  font-size:19vmin;font-weight:900;line-height:.86;letter-spacing:-.04em;
+  font-variant-numeric:tabular-nums;
+}
+.bignum span{color:var(--accent)}
+.versus{display:flex;align-items:flex-end;gap:7vmin;margin-top:0}
+.vlabel{font-size:2vmin;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gray);margin-bottom:2.6vmin}
+
+/* Lists */
+ol.steps{margin-top:3.2vmin;max-width:70%;list-style:none;counter-reset:s}
+ol.steps li{
+  counter-increment:s;
+  font-size:3vmin;
+  font-weight:400;
+  line-height:1.4;
+  padding-left:6.4vmin;
+  position:relative;
+  margin-bottom:2.4vmin;
+}
+ol.steps li::before{
+  content:counter(s);
+  position:absolute;left:0;top:-.1vmin;
+  font-size:3vmin;font-weight:900;color:var(--accent);
+}
+ul.plain{margin-top:3vmin;max-width:68%;list-style:none}
+ul.plain li{
+  font-size:3vmin;font-weight:400;line-height:1.4;
+  padding-left:4.4vmin;position:relative;margin-bottom:2.1vmin;
+}
+ul.plain li::before{
+  content:'';position:absolute;left:0;top:1.5vmin;
+  width:1.8vmin;height:.55vmin;background:var(--accent);
+}
+
+/* Visuals */
+.visual{position:absolute;right:8vmin;top:20vmin;width:34vmin;height:34vmin}
+.visual-lg{position:absolute;right:6vmin;top:20vmin;width:56vmin;height:56vmin}
+.loop-label{
+  font-size:9px;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;fill:var(--text);
+}
+.loop-label.on{fill:var(--accent)}
+
+/* ---------- Animation system ---------- */
+/* Text and blocks: fade-rise, staggered via --i */
+.a{opacity:0;transform:translateY(14px)}
+.slide.in .a{
+  animation:rise 700ms cubic-bezier(.25,.46,.45,.94) both;
+  animation-delay:calc(var(--i,0)*130ms);
+}
+@keyframes rise{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:translateY(0)}
+}
+/* SVG line draw: elements need pathLength="100" */
+.draw{stroke-dasharray:100;stroke-dashoffset:100}
+.slide.in .draw{
+  animation:draw 900ms ease both;
+  animation-delay:calc(var(--i,0)*160ms);
+}
+@keyframes draw{to{stroke-dashoffset:0}}
+/* SVG fade for fills */
+.fade{opacity:0}
+.slide.in .fade{
+  animation:fadein 600ms ease both;
+  animation-delay:calc(var(--i,0)*160ms);
+}
+@keyframes fadein{to{opacity:1}}
+/* Outline that later turns solid accent; recoloured in place because stacking a
+   second rect on top leaves the lower stroke showing through the antialiased edge */
+.hl{opacity:0}
+.slide.in .hl{
+  animation:fadein 600ms ease calc(var(--i,0)*160ms) both,
+            hl 600ms ease calc(var(--hi,0)*160ms) both;
+}
+@keyframes hl{to{fill:var(--accent);stroke:var(--accent)}}
+/* Slow pulse; combined with fadein so fade+pulse elements still appear */
+.slide.in .pulse{animation:fadein 600ms ease calc(var(--i,0)*160ms) both, pulse 3.4s ease-in-out 1.2s infinite}
+@keyframes pulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.12)}
+}
+/* Stamp: marks that pop in place at a set time */
+.stamp{opacity:0;transform-box:fill-box;transform-origin:center}
+.slide.in .stamp{animation:stamp .45s cubic-bezier(.2,.8,.3,1.2) var(--sd,2s) both}
+@keyframes stamp{
+  0%{opacity:0;transform:scale(1.8)}
+  100%{opacity:1;transform:scale(1)}
+}
+/* Content streaming from the docs into the agent (slide 2) */
+.read{opacity:0}
+.slide.in .read{animation:reads 2.4s ease-in-out var(--fd,1.4s) infinite}
+@keyframes reads{
+  0%{transform:translate(0,0);opacity:0}
+  15%{opacity:1}
+  80%{opacity:1}
+  100%{transform:translate(var(--tx,62px),var(--ty,0px));opacity:0}
+}
+/* Single dot orbiting the loop; each node lights up as the dot passes */
+.slide.in .orbit{
+  transform-origin:160px 160px;
+  animation:sweep 18s linear .8s infinite;
+}
+.slide.in .node,
+.slide.in .loop-label{
+  animation:nodeflash 18s linear infinite;
+  animation-delay:calc(.8s + var(--k)*3s);
+}
+@keyframes nodeflash{
+  0%,4%{fill:var(--accent)}
+  10%,100%{fill:var(--text)}
+}
+/* Title: dot slides in and lands inside the threshold band */
+.land{opacity:0}
+.slide.in .land{animation:land 1.6s cubic-bezier(.22,.9,.36,1) .9s both}
+@keyframes land{
+  0%{transform:translateX(-19vmin);opacity:0}
+  25%{opacity:1}
+  70%{transform:translateX(1.2vmin)}
+  100%{transform:translateX(0);opacity:1}
+}
+.slide.in .check-pop{animation:draw 500ms ease 2.6s both}
+h1 .acc{color:var(--accent)}
+/* Threshold line searching, then settling where the human puts it */
+.setline{opacity:0}
+.slide.in .setline{animation:setline 2.6s cubic-bezier(.4,.1,.4,1) 1s both}
+@keyframes setline{
+  0%{transform:translateY(-60px);opacity:0}
+  12%{transform:translateY(-60px);opacity:1}
+  35%{transform:translateY(-60px)}
+  55%{transform:translateY(44px)}
+  78%{transform:translateY(0)}
+  100%{transform:translateY(0);opacity:1}
+}
+/* Failure travelling the iterate loop and arriving as a check */
+.xmark{opacity:0}
+.slide.in .xmark{animation:xinout 2.2s ease .9s both}
+@keyframes xinout{
+  0%{opacity:0}
+  25%,70%{opacity:1}
+  100%{opacity:0}
+}
+.cycle{opacity:0}
+.slide.in .cycle{
+  transform-origin:160px 160px;
+  animation:cycle 2.4s cubic-bezier(.45,.05,.55,.95) 2.4s both;
+}
+@keyframes cycle{
+  0%{transform:rotate(0deg);opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{transform:rotate(270deg);opacity:0}
+}
+/* Failures falling through the deterministic sieve to the judge */
+.fall{opacity:0}
+.slide.in .fall{animation:fall .8s cubic-bezier(.55,0,.85,.36) var(--fd,1.2s) both}
+@keyframes fall{
+  0%{transform:translateY(var(--fh,-80px));opacity:0}
+  25%{opacity:1}
+  100%{transform:translateY(0);opacity:1}
+}
+/* Checkmark on broken ground (failure two) */
+.wobble{transform-origin:180px 210px}
+.slide.in .wobble{animation:wobble 1.3s ease-in-out 2.6s both}
+@keyframes wobble{
+  0%{transform:rotate(0deg)}
+  30%{transform:rotate(-6deg)}
+  60%{transform:rotate(3deg)}
+  100%{transform:rotate(-3deg)}
+}
+/* Magnifier stepping down the trace rows */
+.lens{opacity:0}
+.slide.in .lens{animation:lens 2.6s cubic-bezier(.3,.7,.4,1) 1.2s both}
+@keyframes lens{
+  0%{transform:translateY(-100px);opacity:0}
+  10%{transform:translateY(-100px);opacity:1}
+  30%{transform:translateY(-100px)}
+  48%{transform:translateY(-50px)}
+  66%{transform:translateY(-50px)}
+  84%{transform:translateY(0)}
+  100%{transform:translateY(0);opacity:1}
+}
+/* Dot ascending the three eval altitudes */
+.climb2{opacity:0}
+.slide.in .climb2{animation:climb2 2.8s cubic-bezier(.3,.7,.4,1) 1.4s both}
+@keyframes climb2{
+  0%{transform:translate(-60px,144px);opacity:0}
+  10%{transform:translate(-60px,144px);opacity:1}
+  28%{transform:translate(-60px,144px)}
+  45%{transform:translate(-30px,72px)}
+  64%{transform:translate(-30px,72px)}
+  84%{transform:translate(0,0)}
+  100%{transform:translate(0,0);opacity:1}
+}
+/* Work item flowing through the pipeline (Test slide) */
+.flow{opacity:0}
+.slide.in .flow{animation:flow 3.6s cubic-bezier(.45,.05,.55,.95) 1.4s 1 both}
+@keyframes flow{
+  0%{transform:translateX(0);opacity:0}
+  10%{opacity:1}
+  45%{transform:translateX(104px)}
+  78%{transform:translateX(178px);opacity:1}
+  88%{transform:translateX(184px);opacity:0}
+  100%{transform:translateX(184px);opacity:0}
+}
+/* Scan line sweeping the linted file (SkillCheck slide) */
+.scan{opacity:0}
+.slide.in .scan{animation:scan 2.6s cubic-bezier(.4,0,.6,1) 1.2s both}
+@keyframes scan{
+  0%{opacity:0;transform:translateY(0)}
+  8%{opacity:1}
+  90%{opacity:1}
+  100%{transform:translateY(190px);opacity:0}
+}
+/* Value filling the stairs bottom-up, concentrating at the top (Plan slide) */
+/* Clock hand sweep */
+.slide.in .sweep{
+  transform-origin:160px 160px;
+  animation:sweep 30s linear .5s infinite;
+}
+@keyframes sweep{to{transform:rotate(360deg)}}
+/* Bar grow */
+.grow{transform:scaleX(0);transform-origin:left center}
+.slide.in .grow{
+  animation:grow 800ms cubic-bezier(.25,.46,.45,.94) both;
+  animation-delay:calc(var(--i,0)*160ms);
+}
+.grow-slow{transform:scaleX(0);transform-origin:left center}
+.slide.in .grow-slow{
+  animation:grow 2s cubic-bezier(.4,0,.6,1) both;
+  animation-delay:calc(var(--i,0)*160ms);
+}
+@keyframes grow{to{transform:scaleX(1)}}
+/* Ablation: the check is removed, the harness closes the gap */
+.slide.in .ablate{animation:ablate 3s ease-in-out 1.4s both}
+@keyframes ablate{
+  0%,20%{opacity:1}
+  35%{opacity:.15}
+  50%{opacity:1}
+  65%{opacity:.15}
+  80%,100%{opacity:0}
+}
+.slide.in .shiftup{animation:fadein 600ms ease calc(var(--i,0)*160ms) both, shiftup .9s cubic-bezier(.3,.7,.3,1) 4.8s both}
+@keyframes shiftup{to{transform:translateY(-93px)}}
+/* QR close, faithful to the Copenhagen thank-you slide */
+.slide-dark{background:#1A1A1A;color:#FAFAFA;align-items:center;text-align:center;justify-content:center;padding:8vmin 10vmin 10vmin 10vmin}
+.slide-dark .num{color:#9e9e9e}
+.slide-dark::before{
+  background-image:
+    linear-gradient(rgba(255,255,255,0.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.05) 1px,transparent 1px);
+}
+.thank-you{
+  font-size:8.9vmin;font-weight:900;color:#e6493f;
+  letter-spacing:-.02em;margin-bottom:5.2vmin;
+}
+.presenter{font-size:4.4vmin;font-weight:900;color:#FFFFFF;margin-bottom:1.1vmin}
+.presenter-title{font-size:2.6vmin;color:#F2F2F2;margin-bottom:5.9vmin}
+.section-label{
+  font-size:3.7vmin;font-weight:700;letter-spacing:.04em;
+  color:#FFFFFF;margin-bottom:3vmin;text-transform:uppercase;
+}
+.qr-row{display:flex;gap:5.9vmin;justify-content:center}
+.qr-item{display:flex;flex-direction:column;align-items:center;gap:1.5vmin}
+.qr-code{
+  width:20.4vmin;height:20.4vmin;background:#FAFAFA;
+  padding:1.5vmin;border-radius:.75vmin;
+}
+.qr-code img{width:100%;height:100%;display:block}
+.qr-label{
+  font-size:2vmin;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:#FFFFFF;
+}
+.qr-logo{height:3.7vmin;width:3.7vmin;display:flex;align-items:center;justify-content:center}
+.qr-logo img{height:3.7vmin;width:3.7vmin;object-fit:contain}
+.qr-logo img.substack{height:5.2vmin;width:5.2vmin}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+  .a,.fade{opacity:1;transform:none}
+  .hl{animation:none !important;opacity:1;fill:var(--accent);stroke:var(--accent)}
+  .draw{stroke-dashoffset:0}
+  .grow,.grow-slow{transform:none}
+  .climb2,.lens,.setline,.fall,.land{opacity:1;transform:none}
+  .scan,.xmark,.cycle,.flow{display:none}
+}
+
+@media print{
+  html{scroll-snap-type:none}
+  .slide{page-break-after:always}
+  .a,.fade{opacity:1;transform:none}
+  .hl{animation:none !important;opacity:1;fill:var(--accent);stroke:var(--accent)}
+  .draw{stroke-dashoffset:0}
+  .grow,.grow-slow{transform:none}
+  .climb2,.lens,.setline,.fall,.land{opacity:1;transform:none}
+  .scan,.xmark,.cycle,.flow{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- 1 TITLE (V1 threshold) -->
+<section class="slide slide-title">
+  <div class="category">CWAI AI Meetup #2</div>
+  <h1><span class="a" style="--i:0">Knowing what</span> <span class="acc a" style="--i:1">good</span> <span class="a" style="--i:2">looks like</span></h1>
+  <div class="title-sub a" style="--i:3">Making agents you can trust in production.</div>
+  <div class="title-meta a" style="--i:4">
+    <b>Olga Safonova</b><br>
+    20 August 2026 &nbsp;&middot;&nbsp; twoday, Copenhagen
+  </div>
+  <svg style="position:absolute;right:6vmin;top:50%;transform:translateY(-50%);width:44vmin;height:44vmin" viewBox="0 0 440 440" aria-hidden="true">
+    <line x1="30" y1="300" x2="410" y2="300" stroke="var(--text)" stroke-width="4" pathLength="100" class="draw" style="--i:0"/>
+    <rect x="270" y="292" width="110" height="16" fill="rgba(217,43,32,.25)" class="fade" style="--i:2"/>
+    <line x1="270" y1="278" x2="270" y2="322" stroke="var(--accent)" stroke-width="4" pathLength="100" class="draw" style="--i:3"/>
+    <g class="land">
+      <circle cx="325" cy="300" r="16" fill="var(--accent)"/>
+    </g>
+    <path d="M300,212 l18,20 l34,-44" fill="none" stroke="var(--text)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" pathLength="100" class="draw check-pop"/>
+  </svg>
+  <div class="num"></div>
+</section>
+
+<!-- 2 THE SURFACE -->
+<section class="slide">
+  <div class="category">The new surface</div>
+  <h2 class="a" style="--i:0">An agent reads before it acts</h2>
+  <div class="lead a" style="--i:1">Tool descriptions. Skill files. Configuration. Everything around the model that decides what it sees and what it can do. The harness.</div>
+  <div class="rule a" style="--i:2"></div>
+  <div class="small a" style="--i:3">Code goes through review, tests, CI. These files ship straight to production.</div>
+  <svg class="visual" viewBox="0 0 320 320" style="top:23.4vmin" aria-hidden="true">
+    <rect x="40" y="60" width="150" height="26" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:0"/>
+    <rect x="40" y="110" width="150" height="26" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:1"/>
+    <rect x="40" y="160" width="150" height="26" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:2"/>
+    <circle cx="272" cy="123" r="14" fill="var(--accent)" class="fade" style="--i:4"/>
+    <circle cx="196" cy="73"  r="5" fill="var(--text)" class="read" style="--tx:62px;--ty:50px;--fd:1.4s"/>
+    <circle cx="196" cy="123" r="5" fill="var(--text)" class="read" style="--tx:62px;--ty:0px;--fd:2.2s"/>
+    <circle cx="196" cy="173" r="5" fill="var(--text)" class="read" style="--tx:62px;--ty:-50px;--fd:3s"/>
+  </svg>
+  <div class="num">02</div>
+</section>
+
+<!-- 3 THE LOOP (anchor) -->
+<section class="slide">
+  <div class="category">The trust loop</div>
+  <h2 class="a" style="--i:0">Trust is a loop you run</h2>
+  <ul class="plain" style="max-width:50%">
+    <li class="a" style="--i:1"><strong>Plan.</strong> Decide what good looks like before anything runs</li>
+    <li class="a" style="--i:2"><strong>Validate.</strong> Check the files the agent reads</li>
+    <li class="a" style="--i:3"><strong>Test.</strong> Run the checks on every change, before it ships</li>
+    <li class="a" style="--i:4"><strong>Eval.</strong> Watch and score what it actually does in production</li>
+    <li class="a" style="--i:5"><strong>Iterate.</strong> Every failure becomes a new check</li>
+    <li class="a" style="--i:6"><strong>Re-harness.</strong> Retire checks the new model no longer needs</li>
+  </ul>
+  <svg class="visual-lg" viewBox="0 0 320 320" style="top:24.1vmin;overflow:visible" aria-hidden="true">
+    <circle cx="160" cy="160" r="104" fill="none" stroke="var(--text)" stroke-width="2.5" class="fade" style="--i:0"/>
+    <g class="orbit"><circle cx="160" cy="56" r="4" fill="var(--accent)"/></g>
+    <g class="fade" style="--i:2">
+      <circle cx="160" cy="56"  r="7" fill="var(--text)" class="node" style="--k:0"/>
+      <circle cx="250" cy="108" r="7" fill="var(--text)" class="node" style="--k:1"/>
+      <circle cx="250" cy="212" r="7" fill="var(--text)" class="node" style="--k:2"/>
+      <circle cx="160" cy="264" r="7" fill="var(--text)" class="node" style="--k:3"/>
+      <circle cx="70"  cy="212" r="7" fill="var(--text)" class="node" style="--k:4"/>
+      <circle cx="70"  cy="108" r="7" fill="var(--text)" class="node" style="--k:5"/>
+    </g>
+    <g class="fade" style="--i:3">
+      <text x="160" y="40"  text-anchor="middle" class="loop-label" style="--k:0">Plan</text>
+      <text x="262" y="104" text-anchor="start"  class="loop-label" style="--k:1">Validate</text>
+      <text x="262" y="222" text-anchor="start"  class="loop-label" style="--k:2">Test</text>
+      <text x="160" y="284" text-anchor="middle" class="loop-label" style="--k:3">Eval</text>
+      <text x="58"  y="222" text-anchor="end"    class="loop-label" style="--k:4">Iterate</text>
+      <text x="58"  y="104" text-anchor="end"    class="loop-label" style="--k:5">Re-harness</text>
+    </g>
+  </svg>
+  <div class="num">03</div>
+</section>
+
+<!-- 4 PLAN -->
+<section class="slide">
+  <div class="category">Plan</div>
+  <div class="stages"><span class="on">Plan</span><span>Validate</span><span>Test</span><span>Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">Move the judgement upstream</h2>
+  <div class="lead a" style="--i:1">Put the human at the few early points where an hour of thinking is worth days of correction.</div>
+  <ul class="plain">
+    <li class="a" style="--i:2">Product review, before anything is built</li>
+    <li class="a" style="--i:3">System architecture: which components exist and how they talk</li>
+    <li class="a" style="--i:4">Program design: inside each component, each function's inputs and outputs</li>
+    <li class="a" style="--i:5">Slices reviewed a hundred lines at a time</li>
+  </ul>
+  <div class="small a" style="--i:6">The same amount of judgement, applied earlier.</div>
+  <svg class="visual" viewBox="0 0 320 320" style="top:23.3vmin" aria-hidden="true">
+    <line x1="24" y1="160" x2="296" y2="160" stroke="var(--text)" stroke-width="3" pathLength="100" class="draw" style="--i:0"/>
+    <circle cx="80" cy="160" r="26" fill="var(--accent)" class="fade" style="--i:4"/>
+    <circle cx="160" cy="160" r="15" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:6"/>
+    <circle cx="222" cy="160" r="11" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:8"/>
+    <circle cx="272" cy="160" r="8"  fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:10"/>
+    <circle cx="80" cy="160" r="38" fill="none" stroke="var(--accent)" stroke-width="2.5" class="fade pulse" style="--i:13;transform-origin:80px 160px"/>
+  </svg>
+  <div class="num">04</div>
+</section>
+
+<!-- 5 FAILURE ONE -->
+<section class="slide">
+  <div class="category">Validate &middot; Failure one</div>
+  <div class="stages"><span>Plan</span><span class="on">Validate</span><span>Test</span><span>Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">The agent picks the wrong tool and you blame the model</h2>
+  <div class="lead a" style="--i:1">The reasoning was fine. The interface was ambiguous. So you add instructions on top, and the real fix was in the description the whole time.</div>
+  <svg class="visual" viewBox="0 0 320 320" style="top:30.9vmin" aria-hidden="true">
+    <rect x="30"  y="50" width="110" height="70" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:0"/>
+    <rect x="180" y="50" width="110" height="70" fill="var(--accent-0)" stroke="var(--text)" stroke-width="3" class="hl" style="--i:1;--hi:24"/>
+    <line x1="160" y1="255" x2="85" y2="121" stroke="var(--text)" stroke-width="3" stroke-linecap="round" pathLength="100" class="draw" style="--i:6"/>
+    <line x1="160" y1="255" x2="235" y2="121" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" pathLength="100" class="draw" style="--i:18"/>
+    <circle cx="160" cy="255" r="11" fill="var(--text)" class="fade" style="--i:3"/>
+    <g class="stamp" style="--sd:2.2s">
+      <line x1="69" y1="69" x2="101" y2="101" stroke="var(--accent)" stroke-width="6" stroke-linecap="round"/>
+      <line x1="101" y1="69" x2="69" y2="101" stroke="var(--accent)" stroke-width="6" stroke-linecap="round"/>
+    </g>
+    <path d="M212,85 l16,17 l28,-32" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" class="stamp" style="--sd:4.3s"/>
+  </svg>
+  <div class="num">05</div>
+</section>
+
+<!-- 6 VALIDATE: DESCRIBED TWICE -->
+<section class="slide">
+  <div class="category">Validate</div>
+  <div class="stages"><span>Plan</span><span class="on">Validate</span><span>Test</span><span>Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">The description is the interface</h2>
+  <div class="compare">
+    <div class="card a" style="--i:1">
+      <div class="card-h">Ambiguous</div>
+      <div class="card-b">"List items on a Miro board."</div>
+    </div>
+    <div class="card on a" style="--i:2">
+      <div class="card-h">Transparent</div>
+      <div class="card-b">"List items on a Miro board (max 50). For ALL items with auto-pagination, use miro_list_all_items. For text search, use miro_search_board. USE WHEN: what's on the board, show all stickies, list shapes."</div>
+    </div>
+  </div>
+  <div class="small a" style="--i:3">Both are correct. Only one says when not to use it. It ships in my Miro MCP server today, word for word.</div>
+  <div class="num">06</div>
+</section>
+
+<!-- 7 VALIDATE: COST -->
+<section class="slide">
+  <div class="category">Validate</div>
+  <div class="stages"><span>Plan</span><span class="on">Validate</span><span>Test</span><span>Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">Cap what your tools return</h2>
+  <div class="lead a" style="--i:1">A tool that returns everything makes the agent read everything. You pay on every call, in tokens and in accuracy.</div>
+  <div class="rule a" style="--i:2"></div>
+  <div class="small a" style="--i:3">Return the fields the job needs. Reliability and cost are the same lever.</div>
+  <svg class="visual" viewBox="0 0 320 320" style="top:22.3vmin" aria-hidden="true">
+    <rect x="50" y="70" width="220" height="60" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:0"/>
+    <rect x="50" y="70" width="220" height="60" fill="var(--text)" opacity=".15" class="grow-slow" style="--i:4"/>
+    <rect x="50" y="160" width="220" height="60" fill="none" stroke="var(--text)" stroke-width="3" opacity=".25" class="fade" style="--i:1"/>
+    <rect x="50" y="160" width="62" height="60" fill="var(--accent)" class="grow" style="--i:16"/>
+    <line x1="50" y1="252" x2="270" y2="252" stroke="var(--text)" stroke-width="3" pathLength="100" class="draw" style="--i:3"/>
+  </svg>
+  <div class="num"></div>
+</section>
+
+<!-- 8 SKILLCHECK -->
+<section class="slide">
+  <div class="category">Validate</div>
+  <div class="stages"><span>Plan</span><span class="on">Validate</span><span>Test</span><span>Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">Do not confuse your agents</h2>
+  <div class="lead a" style="--i:1">So I built SkillCheck: a validator for the files agents read. Line caps, token budgets, dead file references, missing stop conditions. It runs on every change.</div>
+  <div class="rule a" style="--i:2"></div>
+  <div class="small a" style="--i:3">getskillcheck.com</div>
+  <div class="term" style="top:29.7vmin" aria-label="Real SkillCheck run output, 15-08-2026">
+    <div class="a cmd" style="--i:1">$ skillcheck check sift</div>
+    <div class="a" style="--i:2">&nbsp;</div>
+    <div class="a crit" style="--i:3">CRITICAL&nbsp; body exceeds 800 lines (got 1277)</div>
+    <div class="a crit" style="--i:4">CRITICAL&nbsp; body exceeds 8000 tokens (15356)</div>
+    <div class="a" style="--i:5">WARNING&nbsp;&nbsp; referenced file missing on disk</div>
+    <div class="a" style="--i:6">WARNING&nbsp;&nbsp; no explicit stop conditions</div>
+    <div class="a mut" style="--i:7">1 critical, 7 warnings more &middot; 70/109 passed</div>
+    <div class="a" style="--i:8">&nbsp;</div>
+    <div class="a crit" style="--i:9">Status: FAIL</div>
+  </div>
+  <div class="num">07</div>
+</section>
+
+<!-- 8 COUNT -->
+<section class="slide">
+  <div class="category">Validate</div>
+  <div class="stages"><span>Plan</span><span class="on">Validate</span><span>Test</span><span>Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <div class="versus">
+    <div class="a" style="--i:0">
+      <div class="vlabel">Tools in Miro's official MCP server</div>
+      <div class="bignum" data-count="38">0</div>
+    </div>
+    <div class="a" style="--i:1">
+      <div class="vlabel">Tools in my Miro MCP server</div>
+      <div class="bignum"><span data-count="110">0</span></div>
+    </div>
+  </div>
+  <div class="lead a" style="--i:2">Both are right. Theirs asks what a board means. Mine asks what you want to do to it.</div>
+  <div class="small a" style="--i:3">Describability is the part you control.</div>
+  <div class="num">08</div>
+</section>
+
+<!-- 9 TEST -->
+<section class="slide">
+  <div class="category">Test</div>
+  <div class="stages"><span>Plan</span><span>Validate</span><span class="on">Test</span><span>Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">Point the pipeline at the files agents read</h2>
+  <ul class="plain">
+    <li class="a" style="--i:1">Linting, so the standard lives in a check instead of someone's memory</li>
+    <li class="a" style="--i:2">Continuous integration, so nobody has to run it</li>
+    <li class="a" style="--i:3">Code health gates, so decay is visible early</li>
+    <li class="a" style="--i:4">Dependency triage, so stale things get chased</li>
+  </ul>
+  <div class="small a" style="--i:5">The machinery is decades old. The target is the new part: tool descriptions, skill files, configuration.</div>
+  <svg class="visual" viewBox="0 0 320 320" style="top:22.5vmin" aria-hidden="true">
+    <rect x="16" y="128" width="82" height="64" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:0"/>
+    <line x1="98" y1="160" x2="120" y2="160" stroke="var(--text)" stroke-width="3" pathLength="100" class="draw" style="--i:1"/>
+    <rect x="120" y="128" width="82" height="64" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:2"/>
+    <line x1="202" y1="160" x2="224" y2="160" stroke="var(--text)" stroke-width="3" pathLength="100" class="draw" style="--i:3"/>
+    <rect x="224" y="128" width="82" height="64" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:4"/>
+    <rect x="224" y="128" width="82" height="64" fill="var(--accent)" class="fade" style="--i:28"/>
+    <path d="M244,160 l14,16 l26,-34" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" class="stamp" style="--sd:4.8s"/>
+    <circle cx="57" cy="160" r="7" fill="var(--text)" class="flow"/>
+  </svg>
+  <div class="num">09</div>
+</section>
+
+<!-- TEST VS EVAL -->
+<section class="slide">
+  <div class="category">Test &middot; Eval</div>
+  <div class="stages"><span>Plan</span><span>Validate</span><span class="on">Test</span><span class="on">Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">Test the harness. Eval the behavior.</h2>
+  <div class="compare">
+    <div class="card a" style="--i:1">
+      <div class="card-h">Test</div>
+      <div class="card-b">Runs on the files, on every change, before anything ships. Deterministic: the same file fails the same way twice. The verdict is pass or fail, and fail blocks the merge.</div>
+    </div>
+    <div class="card a" style="--i:2">
+      <div class="card-h">Eval</div>
+      <div class="card-b">Runs on the traces, after the agent acted. The same prompt can go five different ways. The verdict is a score over many runs, and you watch which way it moves.</div>
+    </div>
+  </div>
+  <div class="small a" style="--i:3">The loop connects them: what an eval catches in production becomes a test on the next change.</div>
+  <div class="num"></div>
+</section>
+
+<!-- 10 EVAL: UNATTENDED -->
+<section class="slide">
+  <div class="category">Eval</div>
+  <div class="stages"><span>Plan</span><span>Validate</span><span>Test</span><span class="on">Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">Trust is earned unattended</h2>
+  <div class="lead a" style="--i:1">Scheduled scans that post only what changed since yesterday. A delta you stop reading is the same as no check at all.</div>
+  <div class="small a" style="--i:2">A real delta, posted by my dependency triage run while I slept.</div>
+  <div class="term" style="top:29.7vmin" aria-label="Real dep-triage delta comment, 10-08-2026">
+    <div class="a cmd" style="--i:1">delta &middot; 10-08-2026 &middot; scheduled run</div>
+    <div class="a" style="--i:2">&nbsp;</div>
+    <div class="a" style="--i:3">NEW (1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; miro-mcp-server#98&nbsp; deps&nbsp; High</div>
+    <div class="a" style="--i:4">RESOLVED (1)&nbsp; mcp-otel-go#31&nbsp; merged 09-08</div>
+    <div class="a mut" style="--i:5">NEWLY STALE&nbsp; 0</div>
+    <div class="a mut" style="--i:6">CARRIED&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0</div>
+  </div>
+  <div class="num">10</div>
+</section>
+
+<!-- EVAL: THREE ALTITUDES -->
+<section class="slide">
+  <div class="category">Eval</div>
+  <div class="stages"><span>Plan</span><span>Validate</span><span>Test</span><span class="on">Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">Three altitudes of eval</h2>
+  <ul class="plain">
+    <li class="a" style="--i:1"><strong>Capability.</strong> What the model can do on a benchmark</li>
+    <li class="a" style="--i:2"><strong>Context.</strong> Whether it works inside your domain and workflow</li>
+    <li class="a" style="--i:3"><strong>Value.</strong> Whether it moved the number the business cares about</li>
+  </ul>
+  <div class="small a" style="--i:4">Benchmarks help you pick a model. Trusting a product takes the other two. Pilots die when value never gets measured.</div>
+  <svg class="visual" viewBox="0 0 320 320" style="top:22.5vmin" aria-hidden="true">
+    <rect x="40" y="210" width="240" height="52" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:1"/>
+    <rect x="70" y="138" width="180" height="52" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:2"/>
+    <rect x="100" y="66" width="120" height="52" fill="var(--accent)" class="fade" style="--i:3"/>
+    <circle cx="88" cy="92" r="9" fill="var(--accent)" class="climb2"/>
+  </svg>
+  <div class="num"></div>
+</section>
+
+<!-- EVAL: READ YOUR TRACES -->
+<section class="slide">
+  <div class="category">Eval</div>
+  <div class="stages"><span>Plan</span><span>Validate</span><span>Test</span><span class="on">Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">Read the traces before you write checks</h2>
+  <div class="lead a" style="--i:1">You do not know what to check until you read what it actually did. The criteria come out of the traces themselves. Reading them is how every one of these failures was found.</div>
+  <div class="rule a" style="--i:2"></div>
+  <div class="small a" style="--i:3">Hamel Husain calls this error analysis before evals. It is the least glamorous step and the highest yield.</div>
+  <svg class="visual" viewBox="0 0 320 320" style="top:30.3vmin" aria-hidden="true">
+    <rect x="40" y="56" width="180" height="30" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:0"/>
+    <rect x="40" y="106" width="180" height="30" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:1"/>
+    <rect x="40" y="156" width="180" height="30" fill="var(--accent-0)" stroke="var(--text)" stroke-width="3" class="hl" style="--i:2;--hi:21"/>
+    <rect x="40" y="206" width="180" height="30" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:3"/>
+    <g class="lens">
+      <circle cx="220" cy="171" r="46" fill="none" stroke="var(--text)" stroke-width="4"/>
+      <line x1="253" y1="204" x2="284" y2="235" stroke="var(--text)" stroke-width="4" stroke-linecap="round"/>
+    </g>
+  </svg>
+  <div class="num"></div>
+</section>
+
+<!-- 12 EVAL: FAILURE TWO -->
+<section class="slide">
+  <div class="category">Eval &middot; Failure two</div>
+  <div class="stages"><span>Plan</span><span>Validate</span><span>Test</span><span class="on">Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">Correct reasoning, wrong answer</h2>
+  <div class="lead a" style="--i:1">One of my scheduled agents reported a security update as resolved. It was still open. The reasoning was perfect. The data it reasoned over was wrong for about thirty seconds.</div>
+  <div class="compare">
+    <div class="card a" style="--i:2">
+      <div class="card-h">What it reported</div>
+      <div class="card-b">security update: resolved</div>
+    </div>
+    <div class="card on a" style="--i:3">
+      <div class="card-h">What a second read showed</div>
+      <div class="card-b">still open</div>
+    </div>
+  </div>
+  <div class="small a" style="--i:4">The fix: every "resolved" claim now gets verified against a second source.</div>
+  <div class="num">12</div>
+</section>
+
+<!-- 13 EVAL: FAILURE THREE -->
+<section class="slide">
+  <div class="category">Eval &middot; Failure three</div>
+  <div class="stages"><span>Plan</span><span>Validate</span><span>Test</span><span class="on">Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">Absence is not evidence</h2>
+  <div class="lead a" style="--i:1">Another agent of mine audits pull requests. One report claimed a change had zero reviewers.</div>
+  <div class="compare">
+    <div class="card a" style="--i:2">
+      <div class="card-h">What the agent reported</div>
+      <div class="card-b">reviewers: 0</div>
+    </div>
+    <div class="card on a" style="--i:3">
+      <div class="card-h">What was actually true</div>
+      <div class="card-b">reviewers: NOT_CHECKED</div>
+    </div>
+  </div>
+  <div class="small a" style="--i:4">The agent never queried that field. Your tooling has to distinguish "unchecked" from "zero", and say which one it is.</div>
+  <div class="num"></div>
+</section>
+
+<!-- EVAL: DETERMINISTIC FIRST -->
+<section class="slide">
+  <div class="category">Eval</div>
+  <div class="stages"><span>Plan</span><span>Validate</span><span>Test</span><span class="on">Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">Most checks do not need AI</h2>
+  <ul class="plain">
+    <li class="a" style="--i:1"><strong>Invalid JSON:</strong> schema validation</li>
+    <li class="a" style="--i:2"><strong>Missing field:</strong> a keyword check</li>
+    <li class="a" style="--i:3"><strong>Wrong tool picked:</strong> assert on the tool name</li>
+    <li class="a" style="--i:4"><strong>Broken SQL:</strong> parse it</li>
+  </ul>
+  <div class="small a" style="--i:5">Save the LLM judge for genuinely subjective calls: binary pass or fail with a critique, checked against examples you labelled yourself.</div>
+  <svg class="visual" viewBox="0 0 320 320" style="top:19.9vmin" aria-hidden="true">
+    <line x1="52" y1="110" x2="268" y2="110" stroke="var(--text)" stroke-width="3" pathLength="100" class="draw" style="--i:0"/>
+    <line x1="72" y1="165" x2="248" y2="165" stroke="var(--text)" stroke-width="3" pathLength="100" class="draw" style="--i:1"/>
+    <line x1="92" y1="220" x2="228" y2="220" stroke="var(--text)" stroke-width="3" pathLength="100" class="draw" style="--i:2"/>
+    <circle cx="100" cy="100" r="9" fill="var(--text)" class="fall" style="--fh:-70px;--fd:1.2s"/>
+    <circle cx="220" cy="100" r="9" fill="var(--text)" class="fall" style="--fh:-70px;--fd:1.6s"/>
+    <circle cx="130" cy="155" r="9" fill="var(--text)" class="fall" style="--fh:-120px;--fd:2s"/>
+    <circle cx="200" cy="210" r="9" fill="var(--text)" class="fall" style="--fh:-175px;--fd:2.4s"/>
+    <circle cx="160" cy="276" r="9" fill="var(--accent)" class="fall" style="--fh:-239px;--fd:2.9s"/>
+    <circle cx="160" cy="276" r="30" fill="none" stroke="var(--accent)" stroke-width="3" class="fade" style="--i:6"/>
+    <text x="202" y="281" text-anchor="start" style="font-size:13px;font-weight:800;fill:var(--accent);letter-spacing:.14em">JUDGE</text>
+  </svg>
+  <div class="num"></div>
+</section>
+
+<!-- EVAL: 87 -->
+<section class="slide">
+  <div class="category">Eval</div>
+  <div class="stages"><span>Plan</span><span>Validate</span><span>Test</span><span class="on">Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <div class="versus">
+    <div class="a" style="--i:0">
+      <div class="vlabel">The ceiling of automated evaluation</div>
+      <div class="bignum"><span data-count="87">0</span><span style="color:var(--text)">%</span></div>
+    </div>
+  </div>
+  <div class="lead a" style="--i:1">The best of three commercial eval agents caught 87 percent of the failures human reviewers had flagged. All three missed the same class: the trace reads like a success, and the business goal was missed.</div>
+  <div class="small a" style="--i:2">The last 13 percent is your product judgement. Saha and Husain, Parlance Labs, 07-2026.</div>
+  <div class="num"></div>
+</section>
+
+<!-- EVAL: METRIC CARD -->
+<section class="slide">
+  <div class="category">Eval</div>
+  <div class="stages"><span>Plan</span><span>Validate</span><span>Test</span><span class="on">Eval</span><span>Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">Give every metric a card</h2>
+  <ul class="plain">
+    <li class="a" style="--i:1">A definition in one sentence</li>
+    <li class="a" style="--i:2">A unit and a cadence: per answer, aggregated weekly</li>
+    <li class="a" style="--i:3">Thresholds that say what good looks like</li>
+    <li class="a" style="--i:4">A named owner and an action when it drops</li>
+  </ul>
+  <div class="small a" style="--i:5">A groundedness card: above 0.8 excellent, below 0.6 investigate retrieval, below 0.5 an alert fires. Thresholds are "we know what good looks like" written in numbers.</div>
+  <svg class="visual" viewBox="0 0 320 320" style="top:25.3vmin" aria-hidden="true">
+    <rect x="60" y="40" width="200" height="240" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:0"/>
+    <line x1="60" y1="100" x2="260" y2="100" stroke="var(--text)" stroke-width="3" pathLength="100" class="draw" style="--i:1"/>
+    <line x1="88" y1="140" x2="232" y2="140" stroke="var(--text)" stroke-width="3" pathLength="100" class="draw" style="--i:2"/>
+    <line x1="88" y1="176" x2="232" y2="176" stroke="var(--text)" stroke-width="3" pathLength="100" class="draw" style="--i:3"/>
+    <rect x="88" y="210" width="144" height="34" fill="var(--accent)" class="fade" style="--i:4"/>
+  </svg>
+  <div class="num"></div>
+</section>
+
+<!-- ITERATE -->
+<section class="slide">
+  <div class="category">Iterate</div>
+  <div class="stages"><span>Plan</span><span>Validate</span><span>Test</span><span>Eval</span><span class="on">Iterate</span><span>Re-harness</span></div>
+  <h2 class="a" style="--i:0">Every failure becomes a check</h2>
+  <ol class="steps" style="max-width:44%">
+    <li class="a" style="--i:1">Write down what broke, with the date</li>
+    <li class="a" style="--i:2">Turn it into a rule the machine can enforce</li>
+    <li class="a" style="--i:3">Add it to the pipeline, so it runs without you</li>
+  </ol>
+  <div class="small a" style="--i:4;max-width:44%">All three failures run as automated checks today. That is the whole iteration loop: pay for a lesson once, then stop paying.</div>
+  <div class="term" style="top:36.3vmin" aria-label="Real dep-triage delta with second-source verification, 13-08-2026">
+    <div class="a cmd" style="--i:1">delta &middot; 13-08-2026 &middot; scheduled run</div>
+    <div class="a" style="--i:2">&nbsp;</div>
+    <div class="a" style="--i:3">RESOLVED (4)</div>
+    <div class="a mut" style="--i:4">&nbsp; mediawiki-mcp-server#112&nbsp; merged</div>
+    <div class="a mut" style="--i:5">&nbsp; nordic-registry#62&nbsp; merged</div>
+    <div class="a mut" style="--i:6">&nbsp; ridge#53 &middot; miro-cli#18&nbsp; merged</div>
+    <div class="a" style="--i:7">&nbsp;</div>
+    <div class="a hit" style="--i:8">"verified by direct read after the</div>
+    <div class="a hit" style="--i:9">&nbsp;search index returned zero hits"</div>
+  </div>
+  <div class="num">14</div>
+</section>
+
+<!-- 15 RE-HARNESS: ABLATION -->
+<section class="slide">
+  <div class="category">Re-harness</div>
+  <div class="stages"><span>Plan</span><span>Validate</span><span>Test</span><span>Eval</span><span>Iterate</span><span class="on">Re-harness</span></div>
+  <h2 class="a" style="--i:0">Every check is a bet that expires</h2>
+  <div class="lead a" style="--i:1">Every check exists because a model failed once. Models improve, so the bets expire: last year's harness can block this year's model.</div>
+  <ol class="steps">
+    <li class="a" style="--i:2">At every model upgrade, take one check out</li>
+    <li class="a" style="--i:3">Run without it and watch for the old failure</li>
+    <li class="a" style="--i:4">It comes back: the check stays. It stays quiet: retire it</li>
+  </ol>
+  <div class="small a" style="--i:5">Researchers call this ablation: take a part out on purpose to learn whether it still earns its place.</div>
+  <svg class="visual" viewBox="0 0 320 320" style="top:32.6vmin" aria-hidden="true">
+    <g class="fade" style="--i:0">
+      <rect x="34"  y="34"  width="66" height="66" fill="none" stroke="var(--text)" stroke-width="3"/>
+      <rect x="127" y="34"  width="66" height="66" fill="none" stroke="var(--text)" stroke-width="3"/>
+      <rect x="220" y="34"  width="66" height="66" fill="none" stroke="var(--text)" stroke-width="3"/>
+      <rect x="34"  y="127" width="66" height="66" fill="none" stroke="var(--text)" stroke-width="3"/>
+      <rect x="220" y="127" width="66" height="66" fill="none" stroke="var(--text)" stroke-width="3"/>
+      <rect x="34"  y="220" width="66" height="66" fill="none" stroke="var(--text)" stroke-width="3"/>
+      <rect x="220" y="220" width="66" height="66" fill="none" stroke="var(--text)" stroke-width="3"/>
+    </g>
+    <rect x="127" y="220" width="66" height="66" fill="none" stroke="var(--text)" stroke-width="3" class="fade shiftup" style="--i:0"/>
+    <rect x="127" y="127" width="66" height="66" fill="var(--accent)" class="ablate"/>
+  </svg>
+  <div class="num">15</div>
+</section>
+
+<!-- 16 WHAT AUTOMATION CANNOT DECIDE -->
+<section class="slide">
+  <div class="category">The part that stays human</div>
+  <h2 class="a" style="--i:0">A linter enforces a standard. Choosing one is your job.</h2>
+  <ul class="plain">
+    <li class="a" style="--i:1">How many tools is too many</li>
+    <li class="a" style="--i:2">When a plain command line beats a server</li>
+    <li class="a" style="--i:3">What belongs in context and what is noise</li>
+    <li class="a" style="--i:4">Which mistakes are worth preventing</li>
+  </ul>
+  <div class="small a" style="--i:5">Every one of these is a product decision. The machine holds whatever line you draw. Drawing it stays with you.</div>
+  <svg class="visual" viewBox="0 0 320 320" style="top:31.8vmin" aria-hidden="true">
+    <path d="M50,40 L50,280 L290,280" fill="none" stroke="var(--text)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" pathLength="100" class="draw" style="--i:0"/>
+    <line x1="50" y1="164" x2="284" y2="164" stroke="var(--accent)" stroke-width="5" class="setline"/>
+    <g class="fade" style="--i:24">
+      <line x1="128" y1="92" x2="152" y2="116" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
+      <line x1="152" y1="92" x2="128" y2="116" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    <g class="fade" style="--i:26">
+      <line x1="210" y1="70" x2="234" y2="94" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
+      <line x1="234" y1="70" x2="210" y2="94" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    <circle cx="120" cy="220" r="9" fill="var(--text)" class="fade" style="--i:25"/>
+    <circle cx="190" cy="238" r="9" fill="var(--text)" class="fade" style="--i:27"/>
+    <circle cx="250" cy="206" r="9" fill="var(--text)" class="fade" style="--i:29"/>
+  </svg>
+  <div class="num">16</div>
+</section>
+
+<!-- 17 THESIS -->
+<section class="slide">
+  <div class="category">The part that stays human</div>
+  <div class="quote a" style="--i:0">To trust your agents you have to trust yourself, and that means knowing what good looks like.</div>
+  <div class="lead a" style="--i:1">Every check in the loop is a judgement someone made, written down and made cheap to repeat. The expertise you already have is the scarce input.</div>
+  <svg class="visual" viewBox="0 0 320 320" style="top:30.1vmin" aria-hidden="true">
+    <circle cx="160" cy="160" r="118" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:1"/>
+    <circle cx="160" cy="160" r="80" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:4"/>
+    <circle cx="160" cy="160" r="44" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:7"/>
+    <circle cx="160" cy="160" r="15" fill="var(--accent)" class="fade pulse" style="--i:10;transform-origin:160px 160px"/>
+  </svg>
+  <div class="num"></div>
+</section>
+
+<!-- 18 FOUR CHECKS -->
+<section class="slide">
+  <div class="category">Take this home</div>
+  <h2 class="a" style="--i:0">Four checks you can add this week</h2>
+  <ol class="steps">
+    <li class="a" style="--i:1">Describe each tool: exactly what it does, and what it does <b>not</b></li>
+    <li class="a" style="--i:2">Cap what comes back before it costs you</li>
+    <li class="a" style="--i:3">Verify the one kind of claim that would embarrass you</li>
+    <li class="a" style="--i:4">Make "I did not check this" visible in the output</li>
+  </ol>
+  <svg class="visual" viewBox="0 0 320 320" style="top:33.7vmin" aria-hidden="true">
+    <rect x="132" y="24"  width="56" height="56" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:1"/>
+    <rect x="132" y="98"  width="56" height="56" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:3"/>
+    <rect x="132" y="172" width="56" height="56" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:5"/>
+    <rect x="132" y="246" width="56" height="56" fill="none" stroke="var(--text)" stroke-width="3" class="fade" style="--i:7"/>
+    <path d="M146,52 l10,11 l18,-22" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" class="stamp" style="--sd:1.6s"/>
+    <path d="M146,126 l10,11 l18,-22" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" class="stamp" style="--sd:2.1s"/>
+    <path d="M146,200 l10,11 l18,-22" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" class="stamp" style="--sd:2.6s"/>
+    <path d="M146,274 l10,11 l18,-22" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" class="stamp" style="--sd:3.1s"/>
+  </svg>
+  <div class="num"></div>
+</section>
+
+<!-- 19 CLOSE -->
+<section class="slide">
+  <div class="category">Are agents ready for enterprise adoption</div>
+  <h2 class="a" style="--i:0">Ready where you can say what good looks like</h2>
+  <div class="lead a" style="--i:1">And check it cheaply. Where you cannot say what correct output is, an agent is a claim you cannot audit.</div>
+  <svg class="visual" viewBox="0 0 440 440" style="top:21.7vmin" aria-hidden="true">
+    <line x1="30" y1="300" x2="410" y2="300" stroke="var(--text)" stroke-width="4" pathLength="100" class="draw" style="--i:0"/>
+    <rect x="270" y="292" width="110" height="16" fill="rgba(217,43,32,.25)" class="fade" style="--i:2"/>
+    <line x1="270" y1="278" x2="270" y2="322" stroke="var(--accent)" stroke-width="4" pathLength="100" class="draw" style="--i:3"/>
+    <g class="land">
+      <circle cx="325" cy="300" r="16" fill="var(--accent)"/>
+    </g>
+    <path d="M300,212 l18,20 l34,-44" fill="none" stroke="var(--text)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" pathLength="100" class="draw check-pop"/>
+  </svg>
+  <div class="num"></div>
+</section>
+
+<!-- THANK YOU + QR (Copenhagen slide-18 style: dark, centered, logos) -->
+<section class="slide slide-dark">
+  <h1 class="thank-you a" style="--i:0">Thank you!</h1>
+  <div class="presenter a" style="--i:1">Olga Safonova</div>
+  <div class="presenter-title a" style="--i:2">Lead PM at Tieto &middot; Builds AI tools in Go</div>
+  <div class="section-label a" style="--i:3">Let's connect</div>
+  <div class="qr-row">
+    <div class="qr-item a" style="--i:4">
+      <div class="qr-code"><img src="assets/qr-linkedin.svg" alt="LinkedIn QR"></div>
+      <div class="qr-label">LinkedIn</div>
+      <div class="qr-logo"><img src="assets/logo-linkedin.png" alt="LinkedIn"></div>
+    </div>
+    <div class="qr-item a" style="--i:5">
+      <div class="qr-code"><img src="assets/qr-github.svg" alt="GitHub QR"></div>
+      <div class="qr-label">GitHub</div>
+      <div class="qr-logo"><img src="assets/logo-github.png" alt="GitHub"></div>
+    </div>
+    <div class="qr-item a" style="--i:6">
+      <div class="qr-code"><img src="assets/qr-substack.svg" alt="Substack QR"></div>
+      <div class="qr-label">Substack</div>
+      <div class="qr-logo"><img src="assets/logo-substack.png" alt="Substack" class="substack"></div>
+    </div>
+    <div class="qr-item a" style="--i:7">
+      <div class="qr-code"><img src="assets/qr-skillcheck.svg" alt="SkillCheck QR"></div>
+      <div class="qr-label">SkillCheck</div>
+      <div class="qr-logo"><img src="assets/logo-skillcheck.png" alt="SkillCheck"></div>
+    </div>
+  </div>
+  <div class="num"></div>
+</section>
+
+<script>
+// Arrow-key and space navigation for presenting.
+const slides = Array.from(document.querySelectorAll('.slide'));
+// Auto-number every slide so inserts never leave stale numbers.
+slides.forEach((s, i) => {
+  const n = s.querySelector('.num');
+  if(n) n.textContent = String(i + 1).padStart(2, '0');
+});
+function current(){
+  return Math.round(window.scrollY / window.innerHeight);
+}
+function go(delta){
+  const next = Math.min(Math.max(current() + delta, 0), slides.length - 1);
+  slides[next].scrollIntoView({behavior:'smooth'});
+}
+document.addEventListener('keydown', e => {
+  if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){ e.preventDefault(); go(1); }
+  if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){ e.preventDefault(); go(-1); }
+  if(e.key === 'Home'){ e.preventDefault(); slides[0].scrollIntoView({behavior:'smooth'}); }
+  if(e.key === 'End'){ e.preventDefault(); slides[slides.length-1].scrollIntoView({behavior:'smooth'}); }
+});
+
+// Reveal animations: mark a slide 'in' when it fills the viewport.
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Animations replay on every visit: 'in' is added when a slide fills the
+// viewport and removed once it has mostly left, so scrolling back re-runs
+// the sequence instead of showing the finished frame.
+const io = new IntersectionObserver(entries => {
+  for(const entry of entries){
+    const s = entry.target;
+    if(entry.intersectionRatio >= 0.6){
+      if(!s.classList.contains('in')){
+        s.classList.add('in');
+        countUp(s);
+      }
+    } else if(entry.intersectionRatio <= 0.15 && s.classList.contains('in')){
+      s.classList.remove('in');
+      s.querySelectorAll('[data-count]').forEach(el => el.textContent = '0');
+    }
+  }
+}, {threshold:[0.15, 0.6]});
+slides.forEach(s => io.observe(s));
+
+// Align each slide's visual (SVG ink or terminal panel) with the top of its
+// body text. Inline top values in the markup are only the pre-JS fallback;
+// this recomputes on load, font load, and resize, so the alignment survives
+// any viewport size and any text edit that changes headline wrapping.
+function alignVisuals(){
+  document.querySelectorAll('.slide').forEach(s => {
+    const body = s.querySelector('.lead, ul.plain, ol.steps, .compare, .small');
+    const vis = s.querySelector('svg.visual, svg.visual-lg, .term');
+    if(!body || !vis) return;
+    const bodyTop = body.offsetTop; // layout position, ignores animation transforms
+    let inkOffset = 0;
+    if(vis.tagName.toLowerCase() === 'svg'){
+      const vb = vis.viewBox.baseVal;
+      const bbox = vis.getBBox();
+      inkOffset = (bbox.y / vb.height) * vis.getBoundingClientRect().height;
+    }
+    vis.style.top = (bodyTop - inkOffset) + 'px';
+  });
+}
+alignVisuals();
+// Realign on the frame after resize so measurements see the settled layout.
+window.addEventListener('resize', () => requestAnimationFrame(() => requestAnimationFrame(alignVisuals)));
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(alignVisuals);
+
+// Count-up for big numbers.
+function countUp(slide){
+  slide.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseInt(el.dataset.count, 10);
+    if(reduceMotion){ el.textContent = target; return; }
+    const dur = 900, t0 = performance.now();
+    function tick(t){
+      const p = Math.min((t - t0) / dur, 1);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+      if(p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}
+</script>
+</body>
+</html>
