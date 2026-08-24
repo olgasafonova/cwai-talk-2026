@@ -81,9 +81,15 @@ They were correct in August 2026. Re-derive before quoting any of them.
 Slide 9 counts Miro MCP tools: 38 in the official server against 110 in mine. Slide 18
 carries the 87 percent automated-evaluator ceiling.
 
+Count my tools from `AllTools`, the list the server actually registers. Counting
+`Name:` lines alone gives 109, not 110: `SearchToolSpec` (the `miro_tool_search`
+discovery tool, declared in `tools/search.go`) sits in `AllTools` as a bare
+identifier rather than an inline literal, so a plain grep cannot see it.
+
 ```bash
-# my tool count (97 on 06-08, 105 on 15-08, 110 on 20-08)
-grep -c 'Name:[[:space:]]*"miro_' tools/definitions.go
+# 110 on 20-08-2026
+awk '/^var AllTools = \[\]ToolSpec\{/,/^}/' ~/Projects/miro-mcp-server/tools/definitions.go |
+  grep -cE 'Name:[[:space:]]*"miro_|^[[:space:]]*[A-Z][A-Za-z]*,[[:space:]]*$'
 
 # the official server states its own count on its docs page
 # https://developers.miro.com/docs/miro-mcp-tools
